@@ -1,0 +1,17 @@
+{
+  "name": "slack_message_generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@slack/webhook": "^6.1.0",
+    "mongoose": "^6.9.1",
+    "slack-node": "^0.1.8"
+  }
+}
