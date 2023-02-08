@@ -49,7 +49,7 @@ db.once('open', function() {
     changeStream.on('change', function(change) {
       // If the state field has changed
       console.log('current State: '+change.fullDocument.state)
-      if (change.operationType === 'insert' && (device.previousState != change.fullDocument.state) && (device.previousState == 'RUNNING')) {
+      if (change.operationType === 'insert' && (device.previousState != change.fullDocument.state) && (device.previousState == 'ACTIVE')) {
         // Send a message to Slack
         const slack = new Slack();
         slack.setWebhook(device.webhook);
