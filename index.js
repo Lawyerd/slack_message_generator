@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Slack = require('slack-node');
 const MONGODB_URI = require('./db/mongoPassword').mongoPassword;
 const { WebClient } = require('@slack/web-api')
-const token = 'xoxb-4790746604496-4752529706471-EhUhXbLErn3WCAPQJuSCICfw'
+const token = process.env.token
 const slackBot = new WebClient(token)
 
 // Connect to MongoDB
@@ -29,19 +29,19 @@ db.once('open', function () {
   let devices = [
     {
       name: "DVF-5000",
-      webhook: 'https://hooks.slack.com/services/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',
+      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04ND0FHD3Q',
       previousState: "INIT"
     },
     {
       name: "DVF-6500",
-      webhook: 'https://hooks.slack.com/services/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',
+      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04NKJ77XFC',
       previousState: "INIT"
     },
     {
       name: "UNIT-35",
-      webhook: 'https://hooks.slack.com/services/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',
+      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04ND0GGXB8',
       previousState: "INIT"
     },
