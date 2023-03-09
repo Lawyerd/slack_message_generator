@@ -78,7 +78,7 @@ db.once('open', function () {
         if ((device.previousState != change.fullDocument.state) && (device.previousState == 'ACTIVE')) {
           // Send a message to Slack
           console.log(`Send message to ${device.name} ${device.previousState} > ${change.fullDocument.state}`)
-          sendMessage(`State changed to: ${change.fullDocument.state} in collection ${device.name}`, device.channel)
+          sendMessage(`[${device.name}]가 '${device.previousState}' 상태에서 '${change.fullDocument.state}' 상태로 변경되었습니다.`, device.channel)
         }
         device.previousState = change.fullDocument.state
 
