@@ -63,23 +63,15 @@ db.once('open', function () {
     }
   }
 
-  let previousState = {};
-    for(let i = 0; i<devices.length; i++){
-      previousState[devices[i].name] = 'INIT'
-    }
-
-
-
   devices.forEach(device => {
     const Data = mongoose.model(device.name, deviceSchema);
-    
-
+    console.log(`Connect with ${device.name} collection`)
     // Watch the collection for changes
     const changeStream = Data.watch();
     changeStream.on('change', function (change) {
       if (change.operationType === 'insert') {
         // If the state field has changed
-        // console.log(`previous State: ${device.previousState}, current State: ${change.fullDocument.state}`)
+        // console.log(`insert ${device.name}`)
         if ((device.previousState != change.fullDocument.state) && (device.previousState == 'ACTIVE')) {
           // Send a message to Slack
           console.log(`Send message to ${device.name} ${device.previousState} > ${change.fullDocument.state}`)
