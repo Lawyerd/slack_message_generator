@@ -44,6 +44,12 @@ db.once('open', function () {
       channel: 'C04ND0GGXB8',
       previousState: "INIT"
     },
+    {
+      name: "test",
+      webhook: 'https://hooks.slack.com/services/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',
+      channel: 'C04T72Y5GF7',
+      previousState: "INIT"
+    },
   ]
 
   const sendMessage = async (message, channel) => {
