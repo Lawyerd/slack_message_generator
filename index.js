@@ -28,40 +28,109 @@ db.once('open', function () {
   let devices = [
     {
       name: "DVF-5000",
-      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04ND0FHD3Q',
-      previousState: "INIT"
+      previousState: "INIT",
+      cycleTime: 0,
+      currentBlock: "#",
+      partCount: 0
     },
     {
       name: "DVF-6500",
-      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04NKJ77XFC',
-      previousState: "INIT"
+      previousState: "INIT",
+      cycleTime: 0,
+      currentBlock: "#",
+      partCount: 0
     },
     {
       name: "UNIT-35",
-      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04ND0GGXB8',
-      previousState: "INIT"
+      previousState: "INIT",
+      cycleTime: 0,
+      currentBlock: "#",
+      partCount: 0
     },
     {
       name: "test",
-      webhook: 'https://hooks.slack.com/services/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',
       channel: 'C04T72Y5GF7',
-      previousState: "INIT"
+      previousState: "INIT",
+      cycleTime: 0,
+      currentBlock: "#",
+      partCount: 0
     },
   ]
 
-  const sendMessage = async (message, channel) => {
-    try {
-      await slackBot.chat.postMessage({
-        channel: channel,
-        text: message
-      })
-    } catch (err) {
-      console.log(err.message)
-    }
+const sendMessage = async (message, blocks, channel) => {
+  try {
+    await slackBot.chat.postMessage({
+      channel: channel,
+      text: message,
+      blocks: blocks
+    })
+  } catch (err) {
+    console.log(err.message)
   }
+}
+
+  const generateMessage = (deviceName, currentState, previousState,partCount, cycleTime, currentBlock) => {
+    let message = `[${deviceName}]가 '${previousState}' 상태에서 '${currentState}' 상태로 변경되었습니다.`
+    let blocks =  [
+            {
+                "type": "header",
+                "text": {
+                    "type": "plain_text",
+                    "text": deviceName
+                }
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "text": `${previousState} :arrow_right: *${currentState}*`,
+                        "type": "mrkdwn"
+                    }
+                ]
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": ":gear: 가공 부품수: `"+partCount+"`"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": ":alarm_clock: 싸이클 타임: `"+cycleTime+"`"
+                }
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": ":sunflower: 현재 블럭: `"+currentBlock+"`"
+                }
+            },
+            {
+                "type": "divider"
+            },
+        ]
+    
+    
+    return [message, blocks]
+}
+
+  const formatTime = (date) => {
+  const hours = date.getUTCHours();
+  const minutes = date.getMinutes() + hours * 60;
+  const seconds = date.getSeconds();
+  const formattedMinutes = minutes.toString().padStart(2, '0');
+  const formattedSeconds = seconds.toString().padStart(2, '0');
+  const formattedTime = `${formattedMinutes}m ${formattedSeconds}s`;
+  return formattedTime;
+}
+
 
   devices.forEach(device => {
     const Data = mongoose.model(device.name, deviceSchema);
@@ -75,9 +144,12 @@ db.once('open', function () {
         if ((device.previousState != change.fullDocument.state) && (device.previousState == 'ACTIVE')) {
           // Send a message to Slack
           console.log(`Send message to ${device.name} ${device.previousState} > ${change.fullDocument.state}`)
-          sendMessage(`[${device.name}]가 '${device.previousState}' 상태에서 '${change.fullDocument.state}' 상태로 변경되었습니다.`, device.channel)
+          const [message, blocks] = generateMessage(device.name, device.previousState, change.fullDocument.state, change.fullDocument.Device.Components.path.Events.part_count, formatTime(device.cycleTime),change.fullDocument.Device.Components.path.Events.block)
+          sendMessage(message, blocks, device.channel)
         }
         device.previousState = change.fullDocument.state
+        device.currentBlock = change.fullDocument.Device.Components.path.Events.block
+        device.cycleTime = change.fullDocument.runningTime
 
       }
     })
