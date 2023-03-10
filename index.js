@@ -72,7 +72,7 @@ const sendMessage = async (message, blocks, channel) => {
   }
 }
 
-  const generateMessage = (deviceName, currentState, previousState,partCount, cycleTime, currentBlock) => {
+  const generateMessage = (deviceName, previousState, currentState, partCount, cycleTime, currentBlock) => {
     let message = `[${deviceName}]가 '${previousState}' 상태에서 '${currentState}' 상태로 변경되었습니다.`
     let blocks =  [
             {
