@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const Slack = require('slack-node');
-const MONGODB_URI = require('./db/mongoPassword').mongoPassword;
+const MONGODB_URI = process.env.mongo_password
 const { WebClient } = require('@slack/web-api')
 const token = process.env.token
 const slackBot = new WebClient(token)
